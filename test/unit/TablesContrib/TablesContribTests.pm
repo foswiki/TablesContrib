@@ -1,6 +1,6 @@
 use strict;
 
-package 'TablesContrib'Tests;
+package TablesContribTests;
 
 use FoswikiTestCase;
 our @ISA = qw( FoswikiTestCase );
