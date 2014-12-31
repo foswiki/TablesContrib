@@ -1,2 +1,3 @@
 # ---+ Extensions
-# ---++ 'TablesContrib'Plugin
+# ---++ TablesContribPlugin
+1;
