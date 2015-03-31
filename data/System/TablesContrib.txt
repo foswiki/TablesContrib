@@ -1,12 +1,13 @@
+%META:TOPICINFO{author="ProjectContributor" date="1427736226" format="1.1" version="1"}%
 <!--
 One line description, required for extensions repository catalog.
-   * Set SHORTDESCRIPTION = Tables module for use wit Foswiki versions that don\'t have the tables handling
+   * Set SHORTDESCRIPTION = Tables module for use with Foswiki versions that don\'t have built-in table parsing and modelling
 -->
 ---+!! TablesContrib
 
 %SHORTDESCRIPTION%
 
-Foswiki 1.2.0 introduces a new internal API that supports the parsing and modelling of in-topic tables. This is designed to canonicalise the handling of tables in the core and extensions. This module makes the tables code available to Foswiki versions prior to 1.2.
+Foswiki 1.2.0 introduces a new internal API that supports the parsing and modelling of in-topic tables, designed to canonicalise the handling of tables in the core and extensions. This module makes this tables code available to extensions running under Foswiki versions prior to 1.2.
 
 %TOC%
 
@@ -15,18 +16,16 @@ Foswiki 1.2.0 introduces a new internal API that supports the parsing and modell
 
 %$INSTALL_INSTRUCTIONS%
 
----++ Info
+---++ Dependencies
+%$DEPENDENCIES%
 
-|  Author: | CrawfordCurrie |
-|  Copyright &copy;: | 2012, Foswiki Contributors, all rights reserved |
-|  License: | GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]]) |
-|  Dependencies: | %$DEPENDENCIES% |
-|  Version: | %$VERSION% |
-|  Release: | %$RELEASE% |
-|  Change History: | <!-- versions below in reverse order -->&nbsp; |
-|  1.0.1 (12 Nov 2013): | Correct row numbering |
-|  1.0.0 (29 Aug 2012): | Initial version |
-|  Home: | http://foswiki.org/Extensions/%TOPIC% |
-|  Support: | http://foswiki.org/Support/%TOPIC% |
+%META:FORM{name="PackageForm"}%
+%META:FIELD{name="Author" title="Author" value="Crawford Currie http://c-dot.co.uk"}%
+%META:FIELD{name="Version" title="Version" value="%$VERSION%"}%
+%META:FIELD{name="Release" title="Release" value="%$RELEASE%"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2012-2015 Foswiki Contributors"}%
+%META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
+%META:FIELD{name="Home" title="Home" value="http://foswiki.org/Extensions/TablesContrib"}%
+%META:FIELD{name="Support" title="Support" value="http://foswiki.org/Support/TablesContrib"}%
 
 
