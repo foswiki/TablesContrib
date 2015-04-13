@@ -24,6 +24,7 @@ Foswiki 1.2.0 introduces a new internal API that supports the parsing and modell
 |  Version: | %$VERSION% |
 |  Release: | %$RELEASE% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  1.0.2 (13 Apr 2015): | Sync over trunk changes: Item13352, Item13309, Item13287 |
 |  1.0.1 (12 Nov 2013): | Correct row numbering |
 |  1.0.0 (29 Aug 2012): | Initial version |
 |  Home: | http://foswiki.org/Extensions/%TOPIC% |
