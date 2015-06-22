@@ -100,6 +100,9 @@ a table (i.e. not verbatim or literal lines).
 sub parse {
     my ( $text, $dispatch ) = @_;
 
+    # SMELL: Should this be a flag in the call, rathern than caller magic
+    my $procform = ( (caller)[0] eq 'Foswiki::Form' );
+
     my $in_table = 0;
     my %scope = ( verbatim => 0, literal => 0, include => 0 );
     my $openRow;
@@ -137,6 +140,7 @@ sub parse {
 
         # Call the per-line event
         if ( _enabled( \%scope ) ) {
+            print STDERR "Processing $line\n" if TRACE;
             if ( &$dispatch( 'early_line', $line, $in_table ) ) {
                 print STDERR "early_line returned 1\n" if TRACE;
                 if ($in_table) {
@@ -147,8 +151,9 @@ sub parse {
                     &$dispatch('close_table');
                 }
 
-               #an EDITTABLE macro starts a new table
-               #this allows us to create new tables from just an EDITTABLE macro
+                # an EDITTABLE macro starts a new table
+                # this allows us to create new tables from
+                # just an EDITTABLE macro
                 print STDERR "Open TABLE\n" if TRACE;
                 &$dispatch('open_table');
                 $in_table = 1;
@@ -158,7 +163,7 @@ sub parse {
 
             if ( $line =~ m/^\s*\|.*(\|\s*|\\)$/ ) {
 
-                print STDERR "interesting $line\n" if TRACE;
+                print STDERR "Tablerow $line\n" if TRACE;
 
                 if ( $line =~ s/\\$// ) {
 
@@ -184,29 +189,44 @@ sub parse {
 
                 if ( length($line) ) {
 
-                    # See Item13385 for why this is commented out
-                    #$line =~ s/\\\|/\007/g;    # protect \| from split
-
                     # Expand comments again after we split
                     my @cols =
                       map { _rewrite( $_, \@comments ) }
-                      map { s/\007/|/g; $_ }
                       split( /\|/, $line, -1 );
 
                     # Note use of LIMIT=-1 on the split so we don't lose
                     # empty columns
 
-                    foreach my $col (@cols) {
-                        my ( $prec, $text, $postc, $ish ) = split_cell($col);
-                        if ($ish) {
-                            print STDERR "TH '$prec', '$text', '$postc'\n"
+                    my $rowlen = scalar @cols;
+                    for ( my $i = 0 ; $i < $rowlen ; $i++ ) {
+                        if (   $procform
+                            && $i == 3
+                            && ( substr( $cols[$i], -1 ) eq '\\' )
+                            && $i < $rowlen )
+                        {
+# Form definitions allow use of \| escapes in the initial values colunn - column 4
+# So this code removes the "splits" from within the initial values
+# But only when processing a form.  See Item13385
+                            print STDERR "Merging Form values column.\n"
                               if TRACE;
-                            &$dispatch( 'th', $prec, $text, $postc );
+                            chop $cols[$i];
+                            $cols[$i] .= '|' . splice( @cols, $i + 1, 1 );
+                            $rowlen--;
+                            redo;
                         }
                         else {
-                            print STDERR "TD '$prec', '$text', '$postc'\n"
-                              if TRACE;
-                            &$dispatch( 'td', $prec, $text, $postc );
+                            my ( $prec, $text, $postc, $ish ) =
+                              split_cell( $cols[$i] );
+                            if ($ish) {
+                                print STDERR "TH '$prec', '$text', '$postc'\n"
+                                  if TRACE;
+                                &$dispatch( 'th', $prec, $text, $postc );
+                            }
+                            else {
+                                print STDERR "TD '$prec', '$text', '$postc'\n"
+                                  if TRACE;
+                                &$dispatch( 'td', $prec, $text, $postc );
+                            }
                         }
                     }
                 }
@@ -226,7 +246,7 @@ sub parse {
 
             # fall through to allow dispatch of line event
         }
-
+        print STDERR "Dispatch $line\n" if TRACE;
         &$dispatch( 'line', _rewrite( $line, \@comments ) );
 
     }    # end of per-line loop
