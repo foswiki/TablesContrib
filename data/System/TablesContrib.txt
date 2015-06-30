@@ -7,7 +7,7 @@ One line description, required for extensions repository catalog.
 
 %SHORTDESCRIPTION%
 
-Foswiki 1.2.0 introduces a new internal API that supports the parsing and modelling of in-topic tables, designed to canonicalise the handling of tables in the core and extensions. This module makes this tables code available to extensions running under Foswiki versions prior to 1.2.
+Foswiki 2.0 introduces a new internal API that supports the parsing and modelling of in-topic tables, designed to canonicalise the handling of tables in the core and extensions. This module makes this tables code available to extensions running under Foswiki versions prior to 1.2.
 
 %TOC%
 

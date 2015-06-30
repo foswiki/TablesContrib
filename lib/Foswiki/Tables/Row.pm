@@ -121,7 +121,7 @@ sub isHeader {
             }
         }
     }
-    return $this->{isHeader};
+    return $this->{isHeader} || 0;
 }
 
 =begin TML
@@ -136,7 +136,7 @@ sub isFooter {
     if ($set) {
         $this->{isFooter} = $set;
     }
-    return $this->{isFooter};
+    return $this->{isFooter} || 0;
 }
 
 =begin TML
@@ -195,8 +195,8 @@ sub setRow {
         if ( $n < scalar( @{ $this->{cols} } ) ) {
 
             # Restore the EDITCELL from the old value, if present
-            if (   $val !~ /%EDITCELL{.*?}%/
-                && $this->{cols}->[$n]->{text} =~ m/(%EDITCELL{.*?}%)/ )
+            if (   $val !~ /%EDITCELL\{.*?\}%/
+                && $this->{cols}->[$n]->{text} =~ m/(%EDITCELL\{.*?\}%)/ )
             {
                 $val .= $1;
             }
