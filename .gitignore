@@ -1,0 +1,10 @@
+*,v
+*,pfv
+*.gz
+/TablesContrib.md5
+/TablesContrib.sha1
+/TablesContrib.tgz
+/TablesContrib.txt
+/TablesContrib.zip
+/TablesContrib_installer
+/TablesContrib_installer.pl
