@@ -1,0 +1,2 @@
+die "Not required with Foswiki 2.0" if ($Foswiki::VERSION > 1.999);
+return 'Installation continuing';
