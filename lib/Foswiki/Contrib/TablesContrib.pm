@@ -11,8 +11,8 @@ package Foswiki::Contrib::TablesContrib;
 use strict;
 use warnings;
 
-our $VERSION = '1.04';
-our $RELEASE = '08 Sep 2015';
+our $VERSION = '1.05';
+our $RELEASE = '01 Oct 2015';
 
 our $SHORTDESCRIPTION =
 'Tables module for use with 1.1.x Foswiki versions that don\'t have the tables handling';

@@ -43,9 +43,9 @@ BEGIN {
 
 =begin TML
 
----++ ClassMethod new($spec)
+---++ ClassMethod new($specs [, $supertag])
 Constructor
-   * =$specs= - array of macro spec hashes for the macros that may
+   * =$specs= - array of tag specs that
      affect this table. Each spec is defined as follows:
       * =raw= is the string representation of the macro that
         apply to this table. Only required so that the table can be
@@ -53,6 +53,7 @@ Constructor
       * =tag= - simple string name of the tag
       * =attrs= - Foswiki::Attrs for the tag. Note that these may have been
         heavily modified due to expansion of =include= parameters.
+   * =$supertag= - optional tag that overrides all other tags
 The following entries in attrs are used:
    * =format= - The format of the cells in a row of the table. The format is
      defined like a table row, where the cell data specify the type for each
@@ -74,36 +75,62 @@ The following entries in attrs are used:
    * =headerrows= - integer number of rows in the thead
    * =footerrows= - integer number of rows in the tfoot
    * =extras= - optional Foswiki::Attrs hash of extra attributes
+   * =initsort=, =sort=, =disableallsort=
 
 =cut
 
 sub new {
-    my ( $class, $specs ) = @_;
+    my ( $class, $specs, $supertag ) = @_;
     my $this = bless(
         {
-            rows   => [],
-            number => undef,
-            specs  => $specs
+            rows     => [],
+            number   => undef,
+            specs    => [],
+            supertag => $supertag || 'TABLE',
+            attrs    => {}                   # combined attributes from all tags
         },
         $class
     );
 
     $this->{colTypes} = [];
-    foreach my $spec ( @{ $this->{specs} } ) {
-        if ( $spec->{attrs}->{format} ) {
-            $this->{colTypes} = $this->parseFormat( $spec->{attrs}->{format} );
-        }
 
-        if ( defined $spec->{attrs}->{headerrows} ) {
-            $this->{headerrows} = $spec->{attrs}->{headerrows};
-        }
+    $this->addTagSpecs($specs);
 
-        if ( defined $spec->{attrs}->{footerrows} ) {
-            $this->{footerrows} = $spec->{attrs}->{footerrows};
+    return $this;
+}
+
+sub addTagSpecs {
+    my ( $this, $specs ) = @_;
+
+    # Collapse tag attributes into a single attribute block.
+    my $attrs = $this->{attrs};
+    foreach my $spec (@$specs) {
+
+        # Record the tag for stringification
+        push( @{ $this->{specs} }, $spec );
+        while ( my ( $k, $v ) = each %{ $spec->{attrs} } ) {
+            next if $k =~ /^_/;
+
+            # $supertag attributes trump all other tags
+            if ( $spec->{tag} eq $this->{supertag}
+                || !defined $this->{attrs}->{$k} )
+            {
+                $this->{attrs}->{$k} = $v;
+            }
         }
     }
 
-    return $this;
+    if ( $attrs->{format} ) {
+        $this->{colTypes} = $this->parseFormat( $attrs->{format} );
+    }
+
+    if ( defined $attrs->{headerrows} ) {
+        $this->{headerrows} = $attrs->{headerrows};
+    }
+
+    if ( defined $attrs->{footerrows} ) {
+        $this->{footerrows} = $attrs->{footerrows};
+    }
 }
 
 =begin TML
@@ -458,7 +485,7 @@ sub addRow {
         if ( $this->totalRows() ) {
             my $count = scalar( @{ $this->{rows}->[0]->{cols} } );
             while ( scalar(@vals) < $count ) {
-                push( @vals, '' );
+                push( @vals, '  ' );
             }
         }
         push( @vals, '' ) unless scalar(@vals);
